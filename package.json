@@ -1,0 +1,14 @@
+{
+  "name": "looksmaxxing-pipeline",
+  "version": "1.0.0",
+  "description": "Multi-step agentic content pipeline for looksmaxxing.guide",
+  "main": "pipeline.js",
+  "scripts": {
+    "run": "node pipeline.js",
+    "test": "node test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
