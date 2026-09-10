@@ -38,7 +38,7 @@ two model calls, and a rejection stops the run with exit code 1 before anything 
 - every `claim.source_id` exists in the research step's source list
 - no banned-advice phrases for this niche (`bone smashing`, `guaranteed results`, `no doctor needed`, and the rest)
 - title 65 characters or fewer, meta 160 or fewer
-- at least two h2 sections, no empty headings, no headings carrying their own `#` marks
+- at least two h2 sections, each with a heading and real body text under it, no stray `#` marks
 - `answer_first` present and long enough to be an actual answer
 
 `test.js` asserts the gate accepts a clean draft and rejects a missing `source_id`, banned advice,

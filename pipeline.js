@@ -71,7 +71,16 @@ const SCHEMA = {
     title: { type: 'string', description: 'Max 65 characters' },
     meta: { type: 'string', description: 'Max 160 characters' },
     answer_first: { type: 'string', description: 'The answer in 2 to 4 sentences, no preamble' },
-    h2: { type: 'array', items: { type: 'string' }, description: 'Section headings, h2 level only' },
+    h2: {
+      type: 'array',
+      description: 'Body sections, h2 level. Each one needs a heading and the prose under it.',
+      items: {
+        type: 'object',
+        additionalProperties: false,
+        properties: { heading: { type: 'string' }, body: { type: 'string' } },
+        required: ['heading', 'body'],
+      },
+    },
     faq: {
       type: 'array',
       items: {
@@ -174,7 +183,7 @@ function gate(draftDoc, researchDoc) {
     d.title,
     d.meta,
     d.answer_first,
-    ...(d.h2 || []),
+    ...(d.h2 || []).flatMap((h) => [h.heading, h.body]),
     ...(d.faq || []).flatMap((f) => [f.q, f.a]),
     ...(d.claims || []).map((c) => c.text),
   ].join(' ').toLowerCase();
@@ -188,8 +197,9 @@ function gate(draftDoc, researchDoc) {
 
   if (!d.h2 || d.h2.length < 2) reasons.push('need at least 2 h2 sections');
   for (const h of d.h2 || []) {
-    if (!h.trim()) reasons.push('empty h2 heading');
-    if (h.trim().startsWith('#')) reasons.push(`h2 "${h}" carries its own heading marks`);
+    if (!h.heading || !h.heading.trim()) reasons.push('empty h2 heading');
+    if (h.heading && h.heading.trim().startsWith('#')) reasons.push(`h2 "${h.heading}" carries its own heading marks`);
+    if (!h.body || h.body.trim().length < 40) reasons.push(`h2 "${h.heading}" has no body text under it`);
   }
 
   const verdict = { topic_id: draftDoc.topic_id, pass: reasons.length === 0, reasons };
@@ -260,7 +270,7 @@ function emit(row, draftDoc, researchDoc, reviewDoc) {
     '',
     d.answer_first,
     '',
-    ...d.h2.flatMap((h) => [`## ${h}`, '']),
+    ...d.h2.flatMap((h) => [`## ${h.heading}`, '', h.body, '']),
     '## Frequently asked questions',
     '',
     ...d.faq.flatMap((f) => [`### ${f.q}`, '', f.a, '']),

@@ -3,11 +3,26 @@
   "meta": "Minoxidil beats placebo for male pattern hair loss, but it takes 3 to 6 months, you have to keep using it, and the shedding at the start is normal.",
   "answer_first": "Yes, for male pattern hair loss, and the effect is real but moderate. Topical minoxidil raises hair count compared with placebo, and you need 3 to 6 months before the result is worth judging. It only holds while you keep using it, so treat it as ongoing maintenance rather than a fix.",
   "h2": [
-    "What minoxidil actually does",
-    "How long before you can judge it",
-    "The shedding phase people quit during",
-    "Side effects worth knowing about",
-    "Who it will not help"
+    {
+      "heading": "What minoxidil actually does",
+      "body": "Minoxidil is a topical drug approved at 2 percent and 5 percent for androgenetic alopecia, which is the male pattern hair loss most people mean when they say they are balding. It does not address the hormonal driver of that loss. What it does is push follicles into a longer growth phase, which shows up as a higher hair count rather than a new hairline."
+    },
+    {
+      "heading": "How long before you can judge it",
+      "body": "Three to six months, and there is no shortcut. That is when the trials read their results, and judging it at week six tells you nothing except that you are impatient. Worth knowing before you start: most of the trial evidence runs 12 months or less, so the honest answer about year five is that nobody has good data."
+    },
+    {
+      "heading": "The shedding phase people quit during",
+      "body": "Shedding in the first weeks is common and it is not a sign the drug is failing. Follicles being pushed into a new growth phase let go of the old hair first. This is the single most common reason men stop, usually right before the point where they would have found out whether it worked."
+    },
+    {
+      "heading": "Side effects worth knowing about",
+      "body": "Irritant and allergic contact dermatitis is the most frequent adverse effect, and propylene glycol in the liquid vehicle is usually the cause rather than the minoxidil itself. Foam formulations that leave it out are better tolerated. An itchy, flaking scalp is a reason to talk to a clinician, not a phase to push through."
+    },
+    {
+      "heading": "What it costs you to keep",
+      "body": "The hair you gain is lost within months of stopping, so this is maintenance and not a course of treatment. Price it as an indefinite monthly cost and a twice-daily habit before you start, because starting and quitting at month eight leaves you where you began, minus the money."
+    }
   ],
   "faq": [
     {
