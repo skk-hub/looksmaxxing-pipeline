@@ -13,6 +13,9 @@ It runs with no API key. The write and review steps fall back to a fixture draft
 term-overlap check, so the pipeline never depends on the network to demonstrate the flow. Set
 `ANTHROPIC_API_KEY` and the same two steps call `claude-opus-5` instead.
 
+Without `ANTHROPIC_API_KEY` the write and research steps use a fixed minoxidil fixture regardless
+of the topic passed.
+
 ## The steps, and what feeds what
 
 Each step writes a file into `out/`. The next step reads that file rather than being handed an

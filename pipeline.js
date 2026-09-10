@@ -105,7 +105,7 @@ const SCHEMA = {
 
 // Step 3: write. Claude call constrained by the schema above.
 // Falls back to a fixture draft when there is no API key, so the pipeline always runs offline.
-async function writeStep(row, researchDoc) {
+async function writeStep(row, researchDoc, draftPath) {
   const key = process.env.ANTHROPIC_API_KEY;
   let draft;
   let source;
@@ -146,8 +146,9 @@ async function writeStep(row, researchDoc) {
     draft = block.input;
     source = MODEL;
   } else {
-    draft = require('./fixture-draft.json');
-    source = 'fixture (ANTHROPIC_API_KEY not set)';
+    const fixture = path.resolve(__dirname, draftPath || 'fixture-draft.json');
+    draft = JSON.parse(fs.readFileSync(fixture, 'utf8'));
+    source = `fixture ${path.basename(fixture)} (ANTHROPIC_API_KEY not set)`;
   }
 
   const doc = { topic_id: row.id, generated_by: source, draft };
@@ -323,6 +324,7 @@ async function main() {
   };
   const topic = arg('topic', 'Does minoxidil work for hair loss');
   const intent = arg('intent', 'research');
+  const draftPath = arg('draft', null); // test hook: run the pipeline on a specific draft
 
   fs.rmSync(OUT, { recursive: true, force: true });
 
@@ -332,7 +334,7 @@ async function main() {
   const step2 = research(read('1-intake.json'));
   console.log(`2 research  -> ${step2.file}  (${step2.doc.sources.length} sources: ${step2.doc.sources.map((s) => s.id).join(', ')})`);
 
-  const step3 = await writeStep(read('1-intake.json'), read('2-research.json'));
+  const step3 = await writeStep(read('1-intake.json'), read('2-research.json'), draftPath);
   console.log(`3 write     -> ${step3.file}  (${step3.doc.generated_by}, ${step3.doc.draft.claims.length} claims)`);
 
   const step4 = gate(read('3-draft.json'), read('2-research.json'));

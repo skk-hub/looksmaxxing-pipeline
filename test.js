@@ -33,3 +33,36 @@ longTitle.draft.title = 'x'.repeat(66);
 assert.strictEqual(gate(longTitle, researchDoc).verdict.pass, false, 'gate passed a 66 char title');
 
 console.log('gate tests passed: clean draft accepted, missing source_id rejected, banned advice rejected, long title rejected');
+
+// End to end: the checks above call gate() directly, so they stay green if main() stops
+// calling it. This one runs the real pipeline and proves a bad draft never reaches the queue.
+const { execFileSync } = require('child_process');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+
+const badDraft = JSON.parse(JSON.stringify(require('./fixture-draft.json')));
+badDraft.claims[2].source_id = 'src-42';
+const badPath = path.join(os.tmpdir(), 'looksmaxxing-bad-draft.json');
+fs.writeFileSync(badPath, JSON.stringify(badDraft));
+
+let exitCode = 0;
+try {
+  execFileSync(process.execPath, ['pipeline.js', '--draft', badPath], { cwd: __dirname, stdio: 'pipe' });
+} catch (err) {
+  exitCode = err.status;
+}
+
+assert.strictEqual(exitCode, 1, 'pipeline exited 0 on a draft citing a source that does not exist');
+
+const verdict = JSON.parse(fs.readFileSync(path.join(__dirname, 'out', '4-gate.json'), 'utf8'));
+assert.strictEqual(verdict.pass, false, 'out/4-gate.json says pass true for a bad draft');
+assert.ok(verdict.reasons.some((r) => r.includes('src-42')), `wrong rejection reason: ${verdict.reasons.join('; ')}`);
+
+assert.strictEqual(
+  fs.existsSync(path.join(__dirname, 'out', 'approval-queue')),
+  false,
+  'a rejected draft still produced files in out/approval-queue',
+);
+
+console.log('end to end passed: bad claim stopped at the gate, exit 1, approval queue empty');
